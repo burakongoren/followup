@@ -1,44 +1,20 @@
 {
   "projects": [
     {
-      "id": "2",
-      "name": "deneme projesi",
-      "owner": "an\u0131l geyik",
-      "tasks": [
-        {
-          "id": "1",
-          "title": "Fatih Oktara mail at\u0131lacak",
-          "status": "Done"
-        },
-        {
-          "id": "2",
-          "title": "bilmem nereye gidilecek",
-          "status": "To Do"
-        },
-        {
-          "id": "3",
-          "title": "bu hafta ne olacak ki",
-          "status": "In Progress"
-        }
-      ],
-      "meetings": {
-        "2025-18": "G\u00f6revler:\n- Fatih Oktara mail at\u0131lacak\n- bilmem nereye gidilecek",
-        "2025-19": "G\u00f6revler:\n- bu hafta ne olacak ki"
-      }
-    },
-    {
       "id": "5",
       "name": "deneme projesi",
       "owner": "BURAK \u00d6NG\u00d6REN",
       "tasks": [],
-      "meetings": {}
+      "meetings": {},
+      "status": "In Progress"
     },
     {
       "id": "6",
       "name": "deneme 2 projesi",
       "owner": "BURAK \u00d6NG\u00d6REN",
       "tasks": [],
-      "meetings": {}
+      "meetings": {},
+      "status": "In Progress"
     }
   ],
   "next_id": 7

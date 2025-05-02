@@ -61,6 +61,7 @@ def add_project():
         "id": get_next_id(db),
         "name": data["name"],
         "owner": data.get("owner", ""),
+        "status": data.get("status", "In Progress"),  # Varsayılan olarak In Progress
         "tasks": [],
         "meetings": {}  # Toplantılar için başlangıç
     }
@@ -158,15 +159,29 @@ def delete_task(task_id):
 @app.route('/api/projects/<project_id>', methods=['PUT'])
 def update_project(project_id):
     data = request.get_json()
+    print(f"Updating project {project_id} with data: {data}")
+    
     db = read_data()
     for project in db["projects"]:
         if project["id"] == project_id:
-            project.update({
-                "name": data.get("name", project["name"]),
-                "owner": data.get("owner", project.get("owner", ""))
-            })
+            # Güncelleme öncesi değerleri log'a yaz
+            print(f"Project before update: {project}")
+            
+            # Gelen verileri kullanarak projeyi güncelle
+            if "name" in data:
+                project["name"] = data["name"]
+            if "owner" in data:
+                project["owner"] = data["owner"]
+            if "status" in data:
+                project["status"] = data["status"]
+                print(f"Updated status to: {data['status']}")
+            
+            # Güncelleme sonrası değerleri log'a yaz
+            print(f"Project after update: {project}")
+            
             write_data(db)
             return jsonify(project)
+    
     return jsonify({"error": "Proje bulunamadı"}), 404
 
 @app.route('/api/projects/<project_id>', methods=['GET'])

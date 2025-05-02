@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const projectNameInput = document.getElementById("projectName");
   const projectOwnerInput = document.getElementById("projectOwner");
   const ownerFilterContainer = document.getElementById("ownerFilterContainer");
+  const themeToggle = document.getElementById("themeToggle");
   
   // Tüm seçili proje sorumlularını takip etmek için
   let selectedOwners = new Set();
@@ -15,8 +16,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Tamamlanmış görevlerin görünürlüğünü takip etmek için
   const showCompletedTasksMap = {};
   
+  // Tamamlanmış projelerin görünürlüğünü takip etmek için
+  let showCompletedProjects = false;
+  
   // Açık/kapalı projeleri takip etmek için
   const expandedProjectsMap = {};
+  
+  // Tema ayarlarını yükle
+  initializeTheme();
 
   async function fetchData(url, options = {}) {
     const response = await fetch(`http://localhost:5000${url}`, {
@@ -28,6 +35,45 @@ document.addEventListener("DOMContentLoaded", async () => {
       body: options.body ? JSON.stringify(options.body) : undefined,
     });
     return response.json();
+  }
+
+  // === TEMA YÖNETİMİ ===
+  function initializeTheme() {
+    // Kayıtlı temayı localStorage'dan al, yoksa 'light' kullan
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme);
+    
+    // Tema değiştirici butonu için event listener
+    themeToggle.addEventListener('click', toggleTheme);
+    
+    // Buton metnini ve ikonunu güncelle
+    updateThemeToggleDisplay(savedTheme);
+  }
+  
+  function setTheme(themeName) {
+    document.documentElement.setAttribute('data-theme', themeName);
+    localStorage.setItem('theme', themeName);
+  }
+  
+  function toggleTheme() {
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    
+    setTheme(newTheme);
+    updateThemeToggleDisplay(newTheme);
+  }
+  
+  function updateThemeToggleDisplay(theme) {
+    const icon = themeToggle.querySelector('.theme-toggle-icon');
+    const text = themeToggle.querySelector('.theme-toggle-text');
+    
+    if (theme === 'dark') {
+      icon.textContent = '🌙';
+      text.textContent = 'Açık Tema';
+    } else {
+      icon.textContent = '☀️';
+      text.textContent = 'Koyu Tema';
+    }
   }
 
   // === PROJE EKLE ===
@@ -43,7 +89,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       const result = await fetchData("/api/projects", {
         method: "POST",
-        body: { name, owner },
+        body: { name, owner, status: "In Progress" },
       });
 
       projectNameInput.value = "";
@@ -63,7 +109,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function loadAndRenderProjects() {
     try {
       const data = await fetchData("/api/projects");
-      const allProjects = data.projects;
+      let allProjects = data.projects;
       
       // Proje sorumlusu filtrelerine göre filtreleme
       let filteredProjects;
@@ -77,8 +123,15 @@ document.addEventListener("DOMContentLoaded", async () => {
           selectedOwners.has(project.owner)
         );
       }
+      
+      // Tamamlanmış projeleri filtrele
+      if (!showCompletedProjects) {
+        filteredProjects = filteredProjects.filter(project => 
+          !project.status || project.status !== "Done"
+        );
+      }
 
-      renderProjects(filteredProjects);
+      renderProjects(filteredProjects, allProjects);
       renderOwnerFilterOptions(allProjects);
     } catch (error) {
       console.error("Veri yüklenirken hata:", error);
@@ -160,13 +213,35 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // === PROJELERİ GÖSTER ===
-  function renderProjects(projects) {
+  function renderProjects(projects, allProjects) {
     projectsContainer.innerHTML = "";
 
+    // Ana kontroller alanı oluştur - tamamlanmış projeleri göster/gizle butonu için
+    const mainControls = document.createElement("div");
+    mainControls.className = "main-controls";
+    
+    // Tamamlanmış proje sayısı
+    const completedProjectsCount = allProjects.filter(p => p.status === "Done").length;
+    
+    // Tamamlanmış projeleri göster/gizle butonu
+    const toggleCompletedBtn = document.createElement("button");
+    toggleCompletedBtn.className = "toggle-completed-projects-btn";
+    toggleCompletedBtn.textContent = showCompletedProjects ? 
+      "Tamamlanmış Projeleri Gizle" : 
+      `Tamamlanmış Projeleri Göster (${completedProjectsCount})`;
+    
+    toggleCompletedBtn.addEventListener("click", () => {
+      showCompletedProjects = !showCompletedProjects;
+      loadAndRenderProjects();
+    });
+    
+    mainControls.appendChild(toggleCompletedBtn);
+    projectsContainer.appendChild(mainControls);
+    
     if (projects.length === 0) {
-      projectsContainer.innerHTML = `
+      projectsContainer.innerHTML += `
         <div class="empty-state">
-          <p>Henüz hiç proje eklenmedi.</p>
+          <p>Görüntülenecek proje bulunamadı.</p>
         </div>`;
       return;
     }
@@ -175,6 +250,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       const projectElement = document.createElement("div");
       projectElement.className = "project";
       projectElement.setAttribute("data-project-id", project.id);
+      
+      // Proje durumuna göre class ekle
+      if (project.status) {
+        projectElement.classList.add(project.status.toLowerCase().replace(" ", "-"));
+      }
       
       // Her proje için tamamlanmış görevlerin görünürlüğünü izle
       if (showCompletedTasksMap[project.id] === undefined) {
@@ -205,6 +285,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <div>
               <h3 class="project-title">${project.name}</h3>
               <p class="project-owner">Sorumlu: ${project.owner || "Belirtilmemiş"}</p>
+              <p class="project-status">Durum: ${project.status || "In Progress"}</p>
             </div>
             <div class="tasks-count">
               <span class="active-tasks">${activeTasks} aktif görev</span>
@@ -212,6 +293,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             </div>
           </div>
           <div class="project-actions">
+            <select class="project-status-select" data-project-id="${project.id}">
+              <option value="On Hold" ${(project.status === "On Hold") ? "selected" : ""}>Beklemeye Alındı</option>
+              <option value="In Progress" ${(!project.status || project.status === "In Progress") ? "selected" : ""}>In Progress</option>
+              <option value="Done" ${(project.status === "Done") ? "selected" : ""}>Done</option>
+            </select>
             <button class="toggle-completed-btn" data-project-id="${project.id}">${buttonText}</button>
             <button class="edit-project-btn" data-project-id="${project.id}" data-project-name="${project.name}" data-project-owner="${project.owner || ""}">Düzenle</button>
             <button class="add-task-btn" data-project-id="${project.id}">Görev Ekle</button>
@@ -332,6 +418,24 @@ document.addEventListener("DOMContentLoaded", async () => {
           </div>
         `;
         sectionDiv.appendChild(headerDiv);
+        
+        // Hafta silme butonu tıklama olayını ekle
+        const deleteBtn = headerDiv.querySelector(".delete-meeting-btn");
+        deleteBtn.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          const projectId = deleteBtn.getAttribute("data-project-id");
+          const weekKey = deleteBtn.getAttribute("data-week");
+          const [year, week] = weekKey.split("-");
+          
+          if (confirm(`${year} / ${week}. hafta toplantı notlarını silmek istiyor musunuz? (Görevler silinmeyecek)`)) {
+            await fetchData(`/api/projects/${projectId}/meetings`, {
+              method: "PUT",
+              body: { week: weekKey, note: null }
+            });
+            
+            await loadAndRenderProjects();
+          }
+        });
       } else {
         // Diğer görevler için başlık
         const headerDiv = document.createElement("div");
@@ -362,6 +466,62 @@ document.addEventListener("DOMContentLoaded", async () => {
             <button class="delete-task-btn" data-task-id="${task.id}">Sil</button>
           </div>
         `;
+        
+        // Görev butonlarının olay dinleyicilerini doğrudan ekle
+        const statusSelect = taskElement.querySelector(".status-select");
+        const editBtn = taskElement.querySelector(".edit-task-btn");
+        const deleteBtn = taskElement.querySelector(".delete-task-btn");
+        
+        // Status değiştirme
+        statusSelect.addEventListener("change", async (e) => {
+          e.stopPropagation();
+          const taskId = statusSelect.getAttribute("data-task-id");
+          const status = statusSelect.value;
+          try {
+            await fetchData(`/api/tasks/${taskId}`, {
+              method: "PUT",
+              body: { status }
+            });
+            await loadAndRenderProjects();
+          } catch (error) {
+            console.error("Görev durumu güncellenirken hata:", error);
+          }
+        });
+        
+        // Görev düzenleme
+        editBtn.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          const taskId = editBtn.getAttribute("data-task-id");
+          const newTitle = prompt("Yeni görev başlığı:", task.title);
+          if (newTitle && newTitle.trim()) {
+            try {
+              await fetchData(`/api/tasks/${taskId}`, {
+                method: "PUT",
+                body: { title: newTitle.trim() }
+              });
+              await loadAndRenderProjects();
+            } catch (error) {
+              console.error("Görev düzenlenirken hata:", error);
+            }
+          }
+        });
+        
+        // Görev silme
+        deleteBtn.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          const taskId = deleteBtn.getAttribute("data-task-id");
+          if (confirm("Görevi silmek istediğinize emin misiniz?")) {
+            try {
+              await fetchData(`/api/tasks/${taskId}`, {
+                method: "DELETE"
+              });
+              await loadAndRenderProjects();
+            } catch (error) {
+              console.error("Görev silinirken hata:", error);
+            }
+          }
+        });
+        
         tasksList.appendChild(taskElement);
       });
       
@@ -372,11 +532,51 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // === BUTONLARI BAĞLA ===
   function setupEventListeners() {
+    // Proje Durum select elementleri için event listener
+    document.querySelectorAll(".project-status-select").forEach((select) => {
+      // Mevcut event listener'ları temizle (varsa)
+      const newSelect = select.cloneNode(true);
+      select.parentNode.replaceChild(newSelect, select);
+      
+      // Yeni event listener ekle ve doğrudan elementi kullan
+      newSelect.addEventListener("change", async function(e) {
+        e.stopPropagation(); // Event propagation'ı durdur
+        const projectId = this.getAttribute("data-project-id");
+        const status = this.value;
+        
+        console.log("Proje durumu değiştiriliyor:", projectId, status);
+        
+        try {
+          const response = await fetch(`http://localhost:5000/api/projects/${projectId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ status })
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          console.log("Proje durumu güncellendi:", status);
+          
+          // Projeleri yeniden yükle
+          await loadAndRenderProjects();
+        } catch (error) {
+          console.error("Proje durumu güncellenirken hata:", error);
+          alert("Proje durumu güncellenirken bir hata oluştu: " + error.message);
+        }
+      });
+    });
+
     // Proje başlığına tıklandığında açılıp kapanma
     document.querySelectorAll(".project-header").forEach((header) => {
       header.addEventListener("click", async (e) => {
-        // Butonlara tıklanırsa proje açma/kapama yapma
-        if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+        // Butonlara veya select'e tıklanırsa proje açma/kapama yapma
+        if (e.target.tagName === 'BUTTON' || e.target.closest('button') || 
+            e.target.tagName === 'SELECT' || e.target.closest('select') ||
+            e.target.tagName === 'OPTION') {
           return;
         }
         
@@ -525,25 +725,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
-    // Toplantı Sil butonları
-    document.querySelectorAll(".delete-meeting-btn").forEach((btn) => {
-      btn.addEventListener("click", async (e) => {
-        e.stopPropagation(); // Event propagation'ı durdur
-        const projectId = e.target.getAttribute("data-project-id");
-        const weekKey = e.target.getAttribute("data-week");
-        const [year, week] = weekKey.split("-");
-        
-        if (confirm(`${year} / ${week}. hafta toplantı notlarını silmek istiyor musunuz? (Görevler silinmeyecek)`)) {
-          await fetchData(`/api/projects/${projectId}/meetings`, {
-            method: "PUT",
-            body: { week: weekKey, note: null }
-          });
-          
-          await loadAndRenderProjects();
-        }
-      });
-    });
-    
     // Proje Düzenle butonları
     document.querySelectorAll(".edit-project-btn").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
@@ -583,8 +764,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
+    // Görev Durum butonları
     document.querySelectorAll(".status-select").forEach((select) => {
       select.addEventListener("change", async (e) => {
+        e.stopPropagation(); // Event propagation'ı durdur
         const taskId = e.target.getAttribute("data-task-id");
         const status = e.target.value;
         await fetchData(`/api/tasks/${taskId}`, {
@@ -595,8 +778,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
+    // Görev Düzenle butonları
     document.querySelectorAll(".edit-task-btn").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
+        e.stopPropagation(); // Event propagation'ı durdur
         const taskId = e.target.getAttribute("data-task-id");
         const newTitle = prompt("Yeni görev başlığı:");
         if (newTitle && newTitle.trim()) {
@@ -609,8 +794,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
+    // Görev Sil butonları
     document.querySelectorAll(".delete-task-btn").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
+        e.stopPropagation(); // Event propagation'ı durdur
         const taskId = e.target.getAttribute("data-task-id");
         if (confirm("Görevi silmek istediğinize emin misiniz?")) {
           await fetchData(`/api/tasks/${taskId}`, {
