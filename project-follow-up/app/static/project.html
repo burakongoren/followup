@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Proje Detayı</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <header>
+        <div>
+            <a href="index.html">Home</a>
+        </div>
+    </header>
+  <div class="container">
+    <h1 id="projectTitle">Proje</h1>
+    <div id="meetingSection"></div>
+
+    <div class="controls">
+      <input type="number" id="yearInput" placeholder="Yıl" min="2000" max="2100" />
+      <input type="number" id="weekInput" placeholder="Hafta" min="1" max="53"/>
+      <textarea id="meetingNoteInput" placeholder="Toplantı notu"></textarea>
+      <button id="saveMeetingBtn">Kaydet</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+  const ownerFilter = document.getElementById("ownerFilter");
+  const ownerName = document.getElementById("ownerName").textContent;
+  
+  // Projeleri getir
+  async function loadProjects() {
+    const response = await fetch("http://localhost:5000/api/projects");
+    const data = await response.json();
+    renderProjects(data.projects);
+  }
+
+  // Projeleri listele
+  function renderProjects(projects) {
+    const projectsList = document.getElementById("projectsList");
+    projectsList.innerHTML = "";
+
+    // Filtreleme işlemi
+    const filteredProjects = ownerFilter.checked
+      ? projects.filter(project => project.owner === ownerName)
+      : projects;
+
+    filteredProjects.forEach(project => {
+      const projectDiv = document.createElement("div");
+      projectDiv.classList.add("project");
+      projectDiv.innerHTML = `
+        <h4>${project.name}</h4>
+        <p>Sorumlu: ${project.owner}</p>
+        <p><strong>Toplantılar:</strong> ${Object.keys(project.meetings).length > 0 ? Object.keys(project.meetings).join(", ") : "Yok"}</p>
+      `;
+      projectsList.appendChild(projectDiv);
+    });
+  }
+
+  // Filtreleme kutusuna tıklama etkinliği
+  ownerFilter.addEventListener("change", () => {
+    loadProjects(); // Filtreleme değiştiğinde projeleri yeniden yükle
+  });
+
+  // İlk projeleri yükle
+  loadProjects();
+});
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectId = urlParams.get("id");
+
+    async function fetchData(url, options = {}) {
+      const response = await fetch(`http://localhost:5000${url}`, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: options.body ? JSON.stringify(options.body) : undefined,
+      });
+      return response.json();
+    }
+
+    async function loadProject() {
+      const data = await fetchData(`/api/projects/${projectId}`);
+      document.getElementById("projectTitle").innerText = data.name;
+      renderMeetings(data.meetings || {});
+    }
+
+    function renderMeetings(meetings) {
+      const container = document.getElementById("meetingSection");
+      container.innerHTML = "<h2>Toplantı Notları</h2>";
+
+      const sorted = Object.entries(meetings).sort(([a], [b]) => {
+        const [yearA, weekA] = a.split("-").map(Number);
+        const [yearB, weekB] = b.split("-").map(Number);
+        return yearA !== yearB ? yearA - yearB : weekA - weekB;
+      });
+
+      sorted.forEach(([key, note]) => {
+        const [year, week] = key.split("-");
+        const div = document.createElement("div");
+        div.classList.add("meeting-note");
+        div.innerHTML = `
+          <strong>${year} / ${week}. Hafta:</strong> ${note}
+          <button class="edit-btn">Düzenle</button>
+          <button class="delete-btn">Sil</button>
+        `;
+
+        div.querySelector(".edit-btn").addEventListener("click", () => {
+          document.getElementById("yearInput").value = year;
+          document.getElementById("weekInput").value = week;
+          document.getElementById("meetingNoteInput").value = note;
+        });
+
+        div.querySelector(".delete-btn").addEventListener("click", async () => {
+          if (confirm(`${year} / ${week}. hafta notunu silmek istiyor musunuz?`)) {
+            await fetchData(`/api/projects/${projectId}/meetings`, {
+              method: "PUT",
+              body: {
+                week: `${year}-${week}`,
+                note: null
+              }
+            });
+            loadProject();
+          }
+        });
+
+        container.appendChild(div);
+      });
+    }
+
+    document.getElementById("saveMeetingBtn").addEventListener("click", async () => {
+      const year = document.getElementById("yearInput").value.trim();
+      const week = document.getElementById("weekInput").value.trim();
+      const note = document.getElementById("meetingNoteInput").value.trim();
+
+      if (!year || !week || !note) {
+        alert("Yıl, hafta ve not alanları zorunludur");
+        return;
+      }
+
+      const key = `${year}-${week.padStart(2, '0')}`;
+
+      await fetchData(`/api/projects/${projectId}/meetings`, {
+        method: "PUT",
+        body: { week: key, note: note }
+      });
+
+      document.getElementById("meetingNoteInput").value = "";
+      document.getElementById("weekInput").value = "";
+      document.getElementById("yearInput").value = "";
+
+      loadProject();
+    });
+
+    loadProject();
+  </script>
+</body>
+</html>
