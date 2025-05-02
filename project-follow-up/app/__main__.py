@@ -24,17 +24,27 @@ def initialize_data_file():
         os.makedirs(DATA_DIR)
     if not os.path.exists(DATA_FILE):
         with open(DATA_FILE, 'w') as f:
-            json.dump({"projects": []}, f, indent=2)
+            json.dump({"projects": [], "next_id": 1}, f, indent=2)
 
 def read_data():
     """Verileri oku"""
     with open(DATA_FILE, 'r') as f:
-        return json.load(f)
+        data = json.load(f)
+        # Eski verileri yeni formata dönüştür
+        if "next_id" not in data:
+            data["next_id"] = max([int(p["id"]) for p in data["projects"]] + [0]) + 1
+        return data
 
 def write_data(data):
     """Verileri yaz"""
     with open(DATA_FILE, 'w') as f:
         json.dump(data, f, indent=2)
+
+def get_next_id(db):
+    """Bir sonraki benzersiz ID'yi al ve güncelle"""
+    next_id = db.get("next_id", 1)
+    db["next_id"] = next_id + 1
+    return str(next_id)
 
 # API Endpoint'leri
 @app.route('/api/projects', methods=['GET'])
@@ -48,9 +58,9 @@ def add_project():
     db = read_data()
 
     new_project = {
-        "id": str(len(db["projects"]) + 1),
+        "id": get_next_id(db),
         "name": data["name"],
-        "owner": data.get("owner", ""),  # <-- Eksikti, eklendi
+        "owner": data.get("owner", ""),
         "tasks": [],
         "meetings": {}  # Toplantılar için başlangıç
     }
@@ -96,8 +106,13 @@ def add_task(project_id):
     
     for project in db["projects"]:
         if project["id"] == project_id:
+            # Projeye özgü görev ID'si oluştur
+            task_id = 1
+            if project["tasks"]:
+                task_id = max([int(t["id"]) for t in project["tasks"]]) + 1
+            
             new_task = {
-                "id": str(len(project["tasks"]) + 1),
+                "id": str(task_id),
                 "title": data["title"],
                 "status": "To Do"
             }
