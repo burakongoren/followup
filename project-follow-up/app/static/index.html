@@ -4,30 +4,52 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Proje Takip Uygulaması</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div class="container">
       <div class="theme-toggle" id="themeToggle">
         <span class="theme-toggle-icon">☀️</span>
-        <span class="theme-toggle-text">Koyu Tema</span>
       </div>
       <header>
-        <h1>Proje Takibi</h1>
+        <h1><i class='bx bx-list-check'></i> Proje Takibi</h1>
         <div class="controls">
-          <input type="text" id="projectName" placeholder="Yeni proje adı" />
-          <input type="text" id="projectOwner" placeholder="Proje sorumlusu" />
-          <button id="addProjectBtn">Proje Ekle</button>
+          <div class="input-with-icon">
+            <i class='bx bx-folder-plus'></i>
+            <input type="text" id="projectName" placeholder="Yeni proje adı" />
+          </div>
+          <div class="input-with-icon">
+            <i class='bx bx-user'></i>
+            <input type="text" id="projectOwner" placeholder="Proje sorumlusu" />
+          </div>
+          <button id="addProjectBtn"><i class='bx bx-plus'></i> Proje Ekle</button>
         </div>
       </header>
-      <div class="controls">
-        <label for="ownerFilter">Sorumlu Filtresi:</label>
-        <div id="ownerFilterContainer">
-          <!-- Checkbox'lar buraya eklenecek -->
+      
+      <div class="filter-section">
+        <h2><i class='bx bx-filter-alt'></i> Filtreler</h2>
+        <div class="controls">
+          <label for="ownerFilter">Sorumlu Filtresi:</label>
+          <div id="ownerFilterContainer">
+            <!-- Checkbox'lar buraya eklenecek -->
+          </div>
         </div>
       </div>
+      
+      <div class="main-controls">
+        <button id="toggleCompletedProjectsBtn" class="toggle-completed-projects-btn">
+          <i class='bx bx-check-circle'></i>
+          <span>Tamamlanan Projeleri Göster</span>
+        </button>
+      </div>
+      
       <div class="projects-container" id="projectsContainer">
         <!-- Projeler buraya eklenecek -->
+        <div class="loading-spinner" id="loadingSpinner">
+          <div class="spinner"></div>
+          <p>Projeler yükleniyor...</p>
+        </div>
       </div>
     </div>
 

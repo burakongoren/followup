@@ -117,6 +117,11 @@ def add_task(project_id):
                 "title": data["title"],
                 "status": "To Do"
             }
+            
+            # Eğer statusDate bilgisi gönderilmişse ekle
+            if "statusDate" in data:
+                new_task["statusDate"] = data["statusDate"]
+                
             project["tasks"].append(new_task)
             write_data(db)
             return jsonify(new_task), 201

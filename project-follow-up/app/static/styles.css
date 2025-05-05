@@ -1,57 +1,60 @@
 :root {
     /* Light mode (default) variables */
-    --bg-main: #f5f7fa;
+    --bg-main: #f8fafc;
     --bg-card: #ffffff;
-    --bg-header: #e9f2fe;
-    --bg-form: #f0f4f8;
-    --border-header: #c4d7ed;
-    --border-light: #dee2e6;
-    --text-primary: #2c3e50;
-    --text-secondary: #7f8c8d;
-    --text-tertiary: #555;
-    --shadow: rgba(0, 0, 0, 0.1);
-    --shadow-hover: rgba(0, 0, 0, 0.15);
-    --blue-primary: #3498db;
-    --blue-secondary: #2980b9;
-    --green-primary: #2ecc71;
-    --green-secondary: #27ae60;
-    --orange-primary: #f39c12;
-    --orange-secondary: #e67e22;
-    --red-primary: #e74c3c;
-    --red-secondary: #c0392b;
-    --gray-primary: #95a5a6;
-    --gray-secondary: #7f8c8d;
+    --bg-header: #ebf4ff;
+    --bg-form: #f7f9fc;
+    --border-header: #bdd5f8;
+    --border-light: #e2e8f0;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-tertiary: #475569;
+    --shadow: rgba(0, 0, 0, 0.08);
+    --shadow-hover: rgba(0, 0, 0, 0.12);
+    --blue-primary: #3b82f6;
+    --blue-secondary: #2563eb;
+    --green-primary: #10b981;
+    --green-secondary: #059669;
+    --orange-primary: #f59e0b;
+    --orange-secondary: #d97706;
+    --red-primary: #ef4444;
+    --red-secondary: #dc2626;
+    --gray-primary: #94a3b8;
+    --gray-secondary: #64748b;
+    --focus-ring: rgba(59, 130, 246, 0.5);
+    --transition-speed: 0.2s;
 }
 
 [data-theme="dark"] {
-    --bg-main: #1a1a2e;
-    --bg-card: #16213e;
-    --bg-header: #0f3460;
-    --bg-form: #1f305e;
-    --border-header: #1a4f8a;
-    --border-light: #2d4a77;
-    --text-primary: #e1e1e1;
-    --text-secondary: #a8a8b3;
-    --text-tertiary: #cccccc;
-    --shadow: rgba(0, 0, 0, 0.2);
-    --shadow-hover: rgba(0, 0, 0, 0.35);
-    --blue-primary: #4a8edd;
-    --blue-secondary: #3178c6;
-    --green-primary: #3ee085;
-    --green-secondary: #2ecc71;
-    --orange-primary: #f7ab37;
-    --orange-secondary: #e67e22;
-    --red-primary: #f25f5c;
-    --red-secondary: #da4844;
-    --gray-primary: #a0aec0;
-    --gray-secondary: #8b9cb3;
+    --bg-main: #0f172a;
+    --bg-card: #1e293b;
+    --bg-header: #1e40af;
+    --bg-form: #1e293b;
+    --border-header: #2563eb;
+    --border-light: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-tertiary: #94a3b8;
+    --shadow: rgba(0, 0, 0, 0.25);
+    --shadow-hover: rgba(0, 0, 0, 0.40);
+    --blue-primary: #60a5fa;
+    --blue-secondary: #3b82f6;
+    --green-primary: #34d399;
+    --green-secondary: #10b981;
+    --orange-primary: #fbbf24;
+    --orange-secondary: #f59e0b;
+    --red-primary: #f87171;
+    --red-secondary: #ef4444;
+    --gray-primary: #cbd5e1;
+    --gray-secondary: #94a3b8;
+    --focus-ring: rgba(96, 165, 250, 0.5);
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
@@ -60,6 +63,7 @@ body {
     line-height: 1.6;
     padding: 20px;
     transition: background-color 0.3s ease, color 0.3s ease;
+    min-height: 100vh;
 }
 
 .container {
@@ -76,21 +80,21 @@ body {
     background-color: var(--bg-card);
     border: 1px solid var(--border-light);
     border-radius: 30px;
-    padding: 8px 15px;
+    padding: 5px 10px 10px 10px;
     display: flex;
     align-items: center;
     cursor: pointer;
     z-index: 100;
-    box-shadow: 0 2px 5px var(--shadow);
-    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px var(--shadow);
+    transition: all var(--transition-speed) ease;
 }
 
 .theme-toggle:hover {
-    box-shadow: 0 3px 8px var(--shadow-hover);
+    box-shadow: 0 4px 12px var(--shadow-hover);
+    transform: translateY(-2px);
 }
 
 .theme-toggle-icon {
-    margin-right: 8px;
     font-size: 16px;
 }
 
@@ -101,52 +105,76 @@ body {
 }
 
 header {
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border-light);
+    margin-bottom: 40px;
+    padding: 24px;
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px var(--shadow);
+    border: 1px solid var(--border-light);
 }
 
 header h1 {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     color: var(--text-primary);
+    font-weight: 700;
+    font-size: 28px;
 }
 
 .controls {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
 }
 
 .controls input {
     flex: 1;
-    padding: 10px 15px;
+    padding: 12px 16px;
     border: 1px solid var(--border-light);
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 16px;
-    background-color: var(--bg-card);
+    background-color: var(--bg-form);
     color: var(--text-primary);
+    transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    min-width: 180px;
+}
+
+.controls input:focus {
+    outline: none;
+    border-color: var(--blue-primary);
+    box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .controls button {
-    padding: 10px 20px;
+    padding: 12px 20px;
     background-color: var(--blue-primary);
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s;
+    font-weight: 500;
+    transition: all var(--transition-speed) ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .controls button:hover {
     background-color: var(--blue-secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+.controls button:active {
+    transform: translateY(0);
 }
 
 /* Proje sorumlusu filtreleri için stil */
 #ownerFilterContainer {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
     margin-left: 10px;
 }
 
@@ -154,31 +182,42 @@ header h1 {
     display: inline-flex;
     align-items: center;
     background-color: var(--bg-form);
-    padding: 5px 10px;
-    border-radius: 4px;
+    padding: 6px 12px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all var(--transition-speed) ease;
+    border: 1px solid var(--border-light);
 }
 
 .owner-filter-option:hover {
     background-color: var(--bg-header);
+    transform: translateY(-1px);
 }
 
 .owner-filter-option input[type="checkbox"] {
-    margin-right: 5px;
+    margin-right: 6px;
+    accent-color: var(--blue-primary);
+    width: 16px;
+    height: 16px;
 }
 
 /* Görev ve toplantı bölümü */
 .tasks-section {
     margin-bottom: 25px;
-    background-color: var(--bg-form);
-    border-radius: 8px;
+    background-color: var(--bg-card);
+    border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 1px 3px var(--shadow);
+    box-shadow: 0 2px 8px var(--shadow);
+    border: 1px solid var(--border-light);
+    transition: all var(--transition-speed) ease;
+}
+
+.tasks-section:hover {
+    box-shadow: 0 4px 12px var(--shadow-hover);
 }
 
 .tasks-section-header {
-    padding: 15px;
+    padding: 16px;
     background-color: var(--bg-header);
     border-bottom: 1px solid var(--border-header);
 }
@@ -187,6 +226,7 @@ header h1 {
     margin: 0;
     font-size: 16px;
     color: var(--text-primary);
+    font-weight: 600;
 }
 
 .week-info {
@@ -196,14 +236,18 @@ header h1 {
 }
 
 .meeting-note-preview {
-    margin-top: 8px;
+    margin-top: 10px;
     font-size: 14px;
     color: var(--text-tertiary);
-    line-height: 1.4;
+    line-height: 1.5;
+    padding: 8px;
+    background-color: var(--bg-form);
+    border-radius: 6px;
+    border-left: 3px solid var(--blue-primary);
 }
 
 .tasks-list {
-    padding: 10px 15px;
+    padding: 16px;
 }
 
 .meeting-actions {
@@ -212,11 +256,15 @@ header h1 {
 }
 
 .meeting-actions button {
-    padding: 4px 8px;
+    padding: 4px 10px;
     border: none;
-    border-radius: 3px;
+    border-radius: 6px;
     font-size: 12px;
     cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .edit-meeting-btn {
@@ -226,6 +274,7 @@ header h1 {
 
 .edit-meeting-btn:hover {
     background-color: var(--orange-secondary);
+    transform: translateY(-1px);
 }
 
 .delete-meeting-btn {
@@ -235,68 +284,100 @@ header h1 {
 
 .delete-meeting-btn:hover {
     background-color: var(--red-secondary);
+    transform: translateY(-1px);
 }
 
 /* Görev ekle formu */
 .meeting-form-container {
-    margin: 0;
-    padding: 15px;
-    background-color: var(--bg-form);
-    border-bottom: 1px solid var(--border-light);
+    margin: 0 0 20px 0;
+    padding: 20px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px var(--shadow);
 }
 
 .meeting-form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 16px;
 }
 
 .meeting-form h3 {
-    margin-bottom: 5px;
+    margin: 0 0 8px 0;
     color: var(--text-primary);
-    font-size: 16px;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.meeting-form h3 i {
+    color: var(--blue-primary);
 }
 
 .form-row {
     display: flex;
-    gap: 10px;
+    gap: 12px;
+    align-items: center;
 }
 
 .form-row input {
-    padding: 8px 12px;
+    flex: 1;
+    padding: 12px 16px;
     border: 1px solid var(--border-light);
-    border-radius: 4px;
-    font-size: 14px;
-    background-color: var(--bg-card);
+    border-radius: 8px;
+    font-size: 15px;
+    background-color: var(--bg-form);
     color: var(--text-primary);
+    transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+.form-row input:focus {
+    outline: none;
+    border-color: var(--blue-primary);
+    box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .form-row input[type="number"] {
-    width: 80px;
+    width: 70px;
+    flex: 0;
 }
 
 .form-row input[type="text"] {
-    flex-grow: 1;
+    width: 100%;
 }
 
 .form-actions {
+    display: flex;
+    gap: 12px;
     justify-content: flex-end;
+    margin-top: 8px;
 }
 
 .save-task-btn, .cancel-btn {
-    padding: 8px 15px;
+    padding: 10px 18px;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all var(--transition-speed) ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .save-task-btn {
-    background-color: var(--green-primary);
+    background-color: var(--blue-primary);
     color: white;
 }
 
 .save-task-btn:hover {
-    background-color: var(--green-secondary);
+    background-color: var(--blue-secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
 }
 
 .cancel-btn {
@@ -306,26 +387,33 @@ header h1 {
 
 .cancel-btn:hover {
     background-color: var(--gray-secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(148, 163, 184, 0.3);
 }
 
 .task {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 12px 15px;
-    margin-bottom: 10px;
-    background-color: var(--bg-card);
-    border-radius: 4px;
-    border-left: 4px solid var(--blue-primary);
-    box-shadow: 0 1px 2px var(--shadow);
+    justify-content: space-between;
+    padding: 12px;
+    margin-bottom: 8px;
+    background-color: var(--bg-form);
+    border-radius: 8px;
+    transition: all var(--transition-speed) ease;
+    border-left: 4px solid var(--gray-primary);
+}
+
+.task:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px var(--shadow);
 }
 
 .task.todo {
-    border-left-color: var(--blue-primary);
+    border-left-color: var(--orange-primary);
 }
 
 .task.in-progress {
-    border-left-color: var(--orange-primary);
+    border-left-color: var(--blue-primary);
 }
 
 .task.done {
@@ -335,96 +423,129 @@ header h1 {
 
 .task-info {
     flex: 1;
+    margin-right: 10px;
 }
 
 .task-title {
-    font-weight: 500;
-    margin-bottom: 5px;
+    margin: 0;
+    font-size: 14px;
     color: var(--text-primary);
+    font-weight: 500;
+    word-break: break-word;
 }
 
 .task-status {
-    font-size: 14px;
+    font-size: 12px;
     color: var(--text-secondary);
+    margin-top: 4px;
 }
 
 .task-actions {
     display: flex;
-    gap: 8px;
+    gap: 6px;
+    align-items: center;
 }
 
 .task-actions button {
-    padding: 5px 10px;
+    background: none;
     border: none;
-    border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
+    color: var(--text-secondary);
+    padding: 4px;
+    border-radius: 4px;
+    transition: all var(--transition-speed) ease;
 }
 
 .task-actions select {
-    padding: 5px;
+    padding: 4px 8px;
     border-radius: 4px;
     border: 1px solid var(--border-light);
     background-color: var(--bg-card);
     color: var(--text-primary);
+    font-size: 12px;
     cursor: pointer;
+    transition: border-color var(--transition-speed) ease;
+}
+
+.task-actions select:focus {
+    outline: none;
+    border-color: var(--blue-primary);
 }
 
 .edit-task-btn {
-    background-color: var(--blue-primary);
-    color: white;
+    color: var(--orange-primary);
+}
+
+.edit-task-btn:hover {
+    background-color: rgba(245, 158, 11, 0.1);
 }
 
 .delete-task-btn {
-    background-color: var(--red-primary);
-    color: white;
+    color: var(--red-primary);
+}
+
+.delete-task-btn:hover {
+    background-color: rgba(239, 68, 68, 0.1);
 }
 
 .status-select {
-    padding: 5px;
-    border-radius: 4px;
+    padding: 6px 10px;
+    border-radius: 6px;
     border: 1px solid var(--border-light);
     background-color: var(--bg-card);
-    cursor: pointer;
+    color: var(--text-primary);
+    font-size: 14px;
 }
 
 .empty-state {
     text-align: center;
     padding: 40px 20px;
     color: var(--text-secondary);
+    font-style: italic;
 }
 
 .error {
     color: var(--red-primary);
+    padding: 20px;
+    text-align: center;
 }
 
-/* Proje başlığı ve içerik */
 .project {
-    margin-bottom: 20px;
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px var(--shadow);
     background-color: var(--bg-card);
-    transition: box-shadow 0.3s ease;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px var(--shadow);
+    overflow: visible;
+    transition: all var(--transition-speed) ease;
+    border: 1px solid var(--border-light);
+}
+
+.project:hover {
+    box-shadow: 0 4px 15px var(--shadow-hover);
 }
 
 .project.collapsed {
-    box-shadow: 0 1px 3px var(--shadow);
+    max-height: 80px;
+    overflow: hidden;
 }
 
 .project.expanded {
-    box-shadow: 0 4px 8px var(--shadow-hover);
+    max-height: none;
+    overflow: visible;
 }
 
 .project-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px;
-    background-color: var(--bg-header);
-    border-bottom: 1px solid var(--border-header);
+    padding: 16px 20px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border-light);
+    transition: background-color var(--transition-speed) ease;
+    position: relative;
+    overflow: visible;
+    z-index: 1;
 }
 
 .project-header:hover {
@@ -434,7 +555,7 @@ header h1 {
 .project-info {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
     flex: 1;
 }
 
@@ -444,34 +565,40 @@ header h1 {
     justify-content: center;
     width: 24px;
     height: 24px;
-    color: var(--blue-primary);
-    font-size: 12px;
+    background-color: var(--bg-form);
+    border-radius: 50%;
+    margin-right: 8px;
+    transition: transform var(--transition-speed) ease, background-color var(--transition-speed) ease;
 }
 
 .toggle-icon {
-    transition: transform 0.2s ease;
+    font-size: 14px;
+    transition: transform var(--transition-speed) ease;
 }
 
 .expanded .toggle-icon {
-    transform: rotate(0deg);
+    transform: rotate(90deg);
 }
 
 .collapsed .toggle-icon {
-    transform: rotate(-90deg);
+    transform: rotate(0deg);
 }
 
 .tasks-count {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background-color: var(--bg-form);
+    padding: 4px 10px;
+    border-radius: 30px;
     font-size: 12px;
-    color: var(--text-secondary);
-    margin-left: auto;
-    padding-right: 15px;
+    font-weight: 500;
+    margin-left: 12px;
 }
 
 .active-tasks {
     color: var(--blue-primary);
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .completed-tasks {
@@ -479,72 +606,102 @@ header h1 {
 }
 
 .project-title {
-    font-size: 18px;
+    margin: 0;
+    font-size: 16px;
     font-weight: 600;
     color: var(--text-primary);
-    margin: 0;
+    flex: 1;
 }
 
 .project-owner {
     font-size: 14px;
     color: var(--text-secondary);
-    margin: 3px 0 0 0;
+    background-color: var(--bg-form);
+    padding: 4px 10px;
+    border-radius: 30px;
+    font-weight: 500;
 }
 
 .project-actions {
     display: flex;
-    gap: 10px;
+    gap: 8px;
+    align-items: center;
+    position: relative;
+    z-index: 5;
 }
 
 .project-actions button {
-    padding: 5px 10px;
+    background: none;
     border: none;
-    border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
+    color: var(--text-secondary);
+    padding: 6px;
+    border-radius: 6px;
+    transition: all var(--transition-speed) ease;
 }
 
 .project-content {
-    background-color: var(--bg-card);
+    padding: 20px;
 }
 
 .add-task-btn {
-    background-color: var(--green-primary);
-    color: white;
+    background-color: var(--bg-form);
+    color: var(--blue-primary);
+    padding: 10px 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid var(--border-light);
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 6px var(--shadow);
+    width: auto;
+    align-self: flex-start;
 }
 
 .add-task-btn:hover {
-    background-color: var(--green-secondary);
+    background-color: var(--bg-header);
+    color: var(--blue-secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px var(--shadow);
+}
+
+.add-task-btn i {
+    font-size: 18px;
 }
 
 .toggle-completed-btn {
-    background-color: var(--blue-primary);
-    color: white;
+    color: var(--green-primary);
 }
 
 .toggle-completed-btn:hover {
-    background-color: var(--blue-secondary);
+    background-color: rgba(16, 185, 129, 0.1);
+    color: var(--green-secondary);
 }
 
 .edit-project-btn {
-    background-color: var(--orange-primary);
-    color: white;
+    color: var(--orange-primary);
 }
 
 .edit-project-btn:hover {
-    background-color: var(--orange-secondary);
+    background-color: rgba(245, 158, 11, 0.1);
+    color: var(--orange-secondary);
 }
 
 .delete-project-btn {
-    background-color: var(--red-primary);
-    color: white;
+    color: var(--red-primary);
 }
 
 .delete-project-btn:hover {
-    background-color: var(--red-secondary);
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--red-secondary);
 }
 
-/* Proje durumları için stil */
 .project.on-hold {
     border-left: 4px solid var(--orange-primary);
 }
@@ -555,27 +712,35 @@ header h1 {
 
 .project.done {
     border-left: 4px solid var(--green-primary);
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
 .project-status {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin-top: 3px;
+    background-color: var(--blue-primary);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 500;
 }
 
 .project-status-select {
     padding: 6px 10px;
-    border-radius: 4px;
+    border-radius: 6px;
     border: 1px solid var(--border-light);
     background-color: var(--bg-card);
     color: var(--text-primary);
     font-size: 14px;
     cursor: pointer;
-    margin-right: 5px;
+    transition: border-color var(--transition-speed) ease;
 }
 
-/* Ana kontroller alanı */
+.project-status-select:focus {
+    outline: none;
+    border-color: var(--blue-primary);
+    box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
 .main-controls {
     display: flex;
     justify-content: flex-end;
@@ -584,15 +749,420 @@ header h1 {
 
 .toggle-completed-projects-btn {
     padding: 8px 16px;
-    background-color: var(--bg-header);
-    color: var(--text-primary);
+    background-color: var(--bg-card);
     border: 1px solid var(--border-light);
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
-    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-primary);
+    transition: all var(--transition-speed) ease;
+    box-shadow: 0 2px 5px var(--shadow);
 }
 
 .toggle-completed-projects-btn:hover {
-    background-color: var(--border-header);
+    background-color: var(--bg-header);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px var(--shadow-hover);
+}
+
+/* Filter section styles */
+.filter-section {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 12px var(--shadow);
+    border: 1px solid var(--border-light);
+}
+
+.filter-section h2 {
+    font-size: 18px;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-section h2 i {
+    color: var(--blue-primary);
+}
+
+/* Input with icon styles */
+.input-with-icon {
+    position: relative;
+    flex: 1;
+    min-width: 180px;
+}
+
+.input-with-icon i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    font-size: 18px;
+}
+
+.input-with-icon input {
+    padding-left: 40px !important;
+    width: 100%;
+}
+
+/* Button with icon styles */
+button i {
+    margin-right: 6px;
+    font-size: 18px;
+}
+
+/* Loading spinner */
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: var(--text-secondary);
+}
+
+.spinner {
+    border: 4px solid var(--bg-form);
+    border-top: 4px solid var(--blue-primary);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Task status badge */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-left: 8px;
+    gap: 4px;
+}
+
+.status-badge.todo {
+    background-color: rgba(245, 158, 11, 0.15);
+    color: var(--orange-primary);
+}
+
+.status-badge.in-progress {
+    background-color: rgba(59, 130, 246, 0.15);
+    color: var(--blue-primary);
+}
+
+.status-badge.done {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: var(--green-primary);
+}
+
+.status-badge.on-hold {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: var(--red-primary);
+}
+
+/* Icon button with tooltip */
+.icon-button {
+    position: relative;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition: all var(--transition-speed) ease;
+    z-index: 5;
+}
+
+.icon-button:hover {
+    background-color: var(--bg-form);
+    color: var(--blue-primary);
+    z-index: 6;
+}
+
+.icon-button i {
+    font-size: 20px;
+    margin: 0;
+}
+
+.icon-button.edit {
+    color: var(--orange-primary);
+}
+
+.icon-button.delete {
+    color: var(--red-primary);
+}
+
+.icon-button.add {
+    color: var(--green-primary);
+}
+
+/* Tooltip */
+.tooltip {
+    position: relative;
+}
+
+.tooltip:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--text-primary);
+    color: var(--bg-card);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 999;
+    pointer-events: none;
+    margin-bottom: 8px;
+    box-shadow: 0 3px 8px var(--shadow);
+}
+
+.tooltip:hover::before {
+    content: "";
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: var(--text-primary) transparent transparent transparent;
+    z-index: 999;
+    pointer-events: none;
+    margin-bottom: 3px;
+}
+
+/* Empty state with illustrations */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.empty-state i {
+    font-size: 60px;
+    color: var(--blue-primary);
+    opacity: 0.4;
+}
+
+.empty-state p {
+    font-size: 16px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.empty-state button {
+    margin-top: 16px;
+    padding: 10px 20px;
+    background-color: var(--blue-primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all var(--transition-speed) ease;
+}
+
+.empty-state button:hover {
+    background-color: var(--blue-secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .controls {
+        flex-direction: column;
+    }
+    
+    .project-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .project-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    
+    .task {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .task-actions {
+        width: 100%;
+        justify-content: flex-end;
+        margin-top: 12px;
+    }
+}
+
+@media (max-width: 576px) {
+    body {
+        padding: 10px;
+    }
+    
+    header h1 {
+        font-size: 24px;
+    }
+    
+    .theme-toggle {
+        top: 10px;
+        right: 10px;
+    }
+}
+
+/* Notification styles */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 350px;
+}
+
+.notification {
+    background-color: var(--bg-card);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px var(--shadow);
+    border-left: 4px solid var(--blue-primary);
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: slide-in 0.3s ease-out;
+    transition: all 0.3s ease;
+}
+
+.notification.hide {
+    opacity: 0;
+    transform: translateX(30px);
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.notification-content i {
+    font-size: 20px;
+    color: var(--blue-primary);
+}
+
+.notification.success {
+    border-left-color: var(--green-primary);
+}
+
+.notification.success i {
+    color: var(--green-primary);
+}
+
+.notification.error {
+    border-left-color: var(--red-primary);
+}
+
+.notification.error i {
+    color: var(--red-primary);
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all var(--transition-speed) ease;
+}
+
+.notification-close:hover {
+    background-color: var(--bg-form);
+    color: var(--red-primary);
+}
+
+@keyframes slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Görevler wrapper'ı */
+.tasks-wrapper {
+    background-color: var(--bg-form);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Tamamlanan görevler listesi başlığı */
+.completed-tasks-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--green-primary);
+    font-size: 16px;
+    margin: 16px 0 12px 0;
+    padding-top: 16px;
+    border-top: 1px dashed var(--border-light);
+}
+
+.completed-tasks-list {
+    opacity: 0.8;
+}
+
+.task-date {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-style: italic;
+}
+
+.task-date i {
+    font-size: 14px;
+    color: var(--blue-primary);
 }

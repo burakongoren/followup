@@ -2,9 +2,16 @@
   "projects": [
     {
       "id": "5",
-      "name": "deneme projesi",
+      "name": "Alt Ma\u00e7a \u00c7atlaklar\u0131 Takip Etme",
       "owner": "BURAK \u00d6NG\u00d6REN",
-      "tasks": [],
+      "tasks": [
+        {
+          "id": "2",
+          "title": "G\u00f6nderildi Birle\u015fik Metal'e",
+          "status": "Done",
+          "statusDate": "18. Hafta 2025 tamamland\u0131"
+        }
+      ],
       "meetings": {},
       "status": "In Progress"
     },
@@ -17,5 +24,5 @@
       "status": "In Progress"
     }
   ],
-  "next_id": 7
+  "next_id": 8
 }
