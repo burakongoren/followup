@@ -25,6 +25,33 @@ def initialize_data_file():
     if not os.path.exists(DATA_FILE):
         with open(DATA_FILE, 'w') as f:
             json.dump({"projects": [], "next_id": 1}, f, indent=2)
+    else:
+        # Mevcut görev ID'lerini benzersiz hale getir
+        migrate_task_ids()
+
+def migrate_task_ids():
+    """Mevcut görev ID'lerini proje ID-görev ID formatına geçir"""
+    try:
+        db = read_data()
+        id_changes_made = False
+        
+        for project in db["projects"]:
+            project_id = project["id"]
+            for task in project["tasks"]:
+                # Eğer görev ID'si zaten "proje_id-task_id" formatında değilse
+                if "-" not in task["id"]:
+                    old_id = task["id"]
+                    # Yeni benzersiz ID oluştur
+                    task["id"] = f"{project_id}-{old_id}"
+                    id_changes_made = True
+        
+        # Değişiklik yapıldıysa veritabanını güncelle
+        if id_changes_made:
+            write_data(db)
+            print("Görev ID'leri başarıyla benzersiz formata güncellendi.")
+    except Exception as e:
+        print(f"Görev ID'leri güncellenirken hata oluştu: {e}")
+        # Hatayı gizle ve normale devam et
 
 def read_data():
     """Verileri oku"""
@@ -107,20 +134,29 @@ def add_task(project_id):
     
     for project in db["projects"]:
         if project["id"] == project_id:
-            # Projeye özgü görev ID'si oluştur
+            # Proje ile görev ID'sini birleştirerek benzersiz bir ID oluştur
             task_id = 1
             if project["tasks"]:
-                task_id = max([int(t["id"]) for t in project["tasks"]]) + 1
+                task_id = max([int(t["id"].split("-")[-1]) for t in project["tasks"]]) + 1
+            
+            # Benzersiz bir ID oluştur: "proje_id-task_id" formatında
+            unique_task_id = f"{project_id}-{task_id}"
+            
+            # Günün tarihini al (GG.AA.YYYY formatında)
+            from datetime import datetime
+            today = datetime.now().strftime("%d.%m.%Y")
             
             new_task = {
-                "id": str(task_id),
+                "id": unique_task_id,
                 "title": data["title"],
                 "status": "To Do"
             }
             
-            # Eğer statusDate bilgisi gönderilmişse ekle
+            # Eğer statusDate bilgisi gönderilmişse kullan, yoksa günün tarihiyle oluştur
             if "statusDate" in data:
                 new_task["statusDate"] = data["statusDate"]
+            else:
+                new_task["statusDate"] = f"{today} tarihinde yapılacaklara eklendi"
                 
             project["tasks"].append(new_task)
             write_data(db)
@@ -134,6 +170,25 @@ def update_task(task_id):
     data = request.get_json()
     db = read_data()
     
+    # Eğer durum değişikliği varsa, tarih bilgisini güncelleyelim
+    if "status" in data and "statusDate" not in data:
+        # Günün tarihini al (GG.AA.YYYY formatında)
+        from datetime import datetime
+        today = datetime.now().strftime("%d.%m.%Y")
+        
+        # Durum bilgisi metni
+        status_text = ""
+        if data["status"] == "Done":
+            status_text = "tamamlandı"
+        elif data["status"] == "In Progress":
+            status_text = "devam ediyor"
+        elif data["status"] == "To Do":
+            status_text = "yapılacaklara eklendi"
+        
+        # Yeni tarih bilgisi
+        data["statusDate"] = f"{today} tarihinde {status_text}"
+    
+    # task_id şimdi "proje_id-task_id" formatında olabilir
     for project in db["projects"]:
         for task in project["tasks"]:
             if task["id"] == task_id:
@@ -153,6 +208,7 @@ def delete_project(project_id):
 @app.route('/api/tasks/<task_id>', methods=['DELETE'])
 def delete_task(task_id):
     db = read_data()
+    # task_id şimdi "proje_id-task_id" formatında olabilir
     for project in db["projects"]:
         original_len = len(project["tasks"])
         project["tasks"] = [t for t in project["tasks"] if t["id"] != task_id]

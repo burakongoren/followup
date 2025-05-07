@@ -370,7 +370,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       
       // Add task button
       const addTaskBtn = document.createElement("button");
-      addTaskBtn.className = "icon-button add tooltip";
+      addTaskBtn.className = "icon-button add tooltip action-btn";
       addTaskBtn.setAttribute("data-tooltip", "Görev Ekle");
       addTaskBtn.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -383,7 +383,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       
       // Edit project button
       const editProjectBtn = document.createElement("button");
-      editProjectBtn.className = "icon-button edit tooltip";
+      editProjectBtn.className = "icon-button edit tooltip action-btn";
       editProjectBtn.setAttribute("data-tooltip", "Projeyi Düzenle");
       editProjectBtn.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -396,7 +396,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       
       // Delete project button
       const deleteProjectBtn = document.createElement("button");
-      deleteProjectBtn.className = "icon-button delete tooltip";
+      deleteProjectBtn.className = "icon-button delete tooltip action-btn";
       deleteProjectBtn.setAttribute("data-tooltip", "Projeyi Sil");
       deleteProjectBtn.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -411,7 +411,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       
       // Toggle completed tasks button
       const toggleCompletedBtn = document.createElement("button");
-      toggleCompletedBtn.className = "icon-button tooltip";
+      toggleCompletedBtn.className = "icon-button tooltip action-btn";
       toggleCompletedBtn.setAttribute("data-tooltip", completedTasks > 0 ? 
           (showCompletedTasksMap[project.id] ? "Tamamlanan Görevleri Gizle" : "Tamamlanan Görevleri Göster") : 
           "Tamamlanan Görev Yok");
@@ -435,6 +435,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       projectActions.appendChild(toggleCompletedBtn);
       projectActions.appendChild(editProjectBtn);
       projectActions.appendChild(deleteProjectBtn);
+      
+      // Başlangıçta butonları göster/gizle durumunu ayarla
+      const actionButtons = projectActions.querySelectorAll('.action-btn');
+      actionButtons.forEach(btn => {
+        btn.style.display = isExpanded ? 'block' : 'none';
+      });
       
       // Header'a info ve actions ekle
       projectHeader.appendChild(projectInfo);
@@ -850,15 +856,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       showLoading(true);
       
-      // Tarih bilgisini hesapla
+      // Günün tarihini alalım (GG.AA.YYYY formatında)
       const now = new Date();
+      const day = String(now.getDate()).padStart(2, '0');
+      const month = String(now.getMonth() + 1).padStart(2, '0');
       const year = now.getFullYear();
-      const startDate = new Date(year, 0, 1); // Yılın ilk günü
-      const days = Math.floor((now - startDate) / (24 * 60 * 60 * 1000));
-      const weekNumber = Math.ceil(days / 7);
       
-      // Yeni görevler "To Do" olarak başladığı için
-      const statusDate = `${weekNumber}. Hafta ${year} yapılacaklara eklendi`;
+      // Tarih bilgisi
+      const statusDate = `${day}.${month}.${year} tarihinde yapılacaklara eklendi`;
       
       await fetchData(`/api/projects/${projectId}/tasks`, {
         method: "POST",
@@ -879,12 +884,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       showLoading(true);
       
-      // Tarih bilgisini hesapla
+      // Günün tarihini alalım (GG.AA.YYYY formatında)
       const now = new Date();
+      const day = String(now.getDate()).padStart(2, '0');
+      const month = String(now.getMonth() + 1).padStart(2, '0');
       const year = now.getFullYear();
-      const startDate = new Date(year, 0, 1); // Yılın ilk günü
-      const days = Math.floor((now - startDate) / (24 * 60 * 60 * 1000));
-      const weekNumber = Math.ceil(days / 7);
       
       // Durum bilgisi metni
       let statusText = "";
@@ -901,7 +905,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       
       // Tarih bilgisi
-      const statusDate = `${weekNumber}. Hafta ${year} ${statusText}`;
+      const statusDate = `${day}.${month}.${year} tarihinde ${statusText}`;
       
       await fetchData(`/api/tasks/${taskId}`, {
         method: "PUT",
@@ -944,9 +948,21 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (expandedProjectsMap[projectId]) {
         projectElement.classList.remove("collapsed");
         projectElement.classList.add("expanded");
+        
+        // Show action buttons when expanded
+        const actionButtons = projectElement.querySelectorAll('.action-btn');
+        actionButtons.forEach(btn => {
+          btn.style.display = 'block';
+        });
       } else {
         projectElement.classList.remove("expanded");
         projectElement.classList.add("collapsed");
+        
+        // Hide action buttons when collapsed
+        const actionButtons = projectElement.querySelectorAll('.action-btn');
+        actionButtons.forEach(btn => {
+          btn.style.display = 'none';
+        });
       }
     }
   }

@@ -640,6 +640,15 @@ header h1 {
     transition: all var(--transition-speed) ease;
 }
 
+.action-btn {
+    /* Initially hidden for collapsed projects */
+    display: none;
+}
+
+.project.expanded .action-btn {
+    display: block;
+}
+
 .project-content {
     padding: 20px;
 }
